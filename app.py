@@ -19,4 +19,4 @@ def wechat():
         return make_response(build_reply(msg["from_user"], msg["to_user"], ai_reply))
 
 if __name__ == "__main__":
-    app.run()
+    app.run()(host='0.0.0.0', port=8080)
