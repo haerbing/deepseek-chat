@@ -1,0 +1,12 @@
+{
+  "envId": "prod-2gdkkd41384736c1",
+  "framework": {
+    "name": "deepseek-bot",
+    "plugins": {
+      "python": {
+        "entry": "app.py",
+        "requirements": "requirements.txt"
+      }
+    }
+  }
+}
