@@ -47,4 +47,4 @@ def wechat():
             return "success"  # 微信要求回复 success 避免重发
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+    app.run(host='0.0.0.0', port=80)
