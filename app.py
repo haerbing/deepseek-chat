@@ -4,7 +4,7 @@ from deepseek_api import ask_deepseek
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/wechat", methods=["GET", "POST"])
 def wechat():
     if request.method == "GET":
         return request.args.get("echostr")
