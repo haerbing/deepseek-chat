@@ -2,7 +2,7 @@ import requests
 from config import DEEPSEEK_API_KEY
 
 def ask_deepseek(user_input):
-    url = "https://api.deepseek.com/v1
+    url = "https://api.deepseek.com/v1"
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
         "Content-Type": "application/json"
