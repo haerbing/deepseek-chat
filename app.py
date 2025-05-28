@@ -55,6 +55,9 @@ def wechat():
                 content=reply_content
             )
             return make_response(reply_xml)
+            response.content_type = 'text/xml'
+        return response
+
         except Exception as e:
             print("处理失败:", e)
             return "success"  # 微信要求返回 "success"，避免重复推送
