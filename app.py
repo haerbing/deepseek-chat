@@ -1,14 +1,12 @@
 from flask import Flask, request, make_response
 import hashlib
-import time
+import requests
 
 from wechat import parse_wechat_msg, build_reply
 from deepseek_api import ask_deepseek
 
 app = Flask(__name__)
 
-# 和公众号设置里的 Token 保持一致
-TOKEN = "chenleibin2006"  # 你自己设置的 token
 
 @app.route("/wechat", methods=["GET", "POST"])
 def wechat():
@@ -22,10 +20,7 @@ def wechat():
         check_str = "".join(sorted([TOKEN, timestamp, nonce]))
         check_signature = hashlib.sha1(check_str.encode("utf-8")).hexdigest()
 
-        if check_signature == signature:
-            return echostr
-        else:
-            return ""
+        return echostr if check_signature == signature else ""
 
     elif request.method == "POST":
         try:
@@ -33,13 +28,25 @@ def wechat():
             msg = parse_wechat_msg(xml_data)
             user_msg = msg["content"]
 
-            # 调用 AI 接口
-            ai_reply = ask_deepseek(user_msg)
+            # **获取用户 OpenID**
+            openid = request.headers.get("x-wx-openid", "")  # 由云托管自动提供
+
+            # **调用微信开放接口服务**
+            api_url = "https://api.weixin.qq.com/wxa/msg_sec_check"
+            payload = {"openid": openid, "version": 2, "scene": 2, "content": user_msg}
+            wechat_response = requests.post(api_url, json=payload)
+            check_result = wechat_response.json()
+
+            # 处理 API 返回结果
+            if check_result.get("errcode") == 0:
+                reply_content = ask_deepseek(user_msg)  # AI 处理用户消息
+            else:
+                reply_content = "消息未通过安全校验"
 
             reply_xml = build_reply(
                 to_user=msg["from_user"],
                 from_user=msg["to_user"],
-                content=ai_reply
+                content=reply_content
             )
             return make_response(reply_xml)
         except Exception as e:
