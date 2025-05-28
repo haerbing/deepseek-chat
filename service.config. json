@@ -1,0 +1,16 @@
+{
+  "service": {
+    "name": "wechat-api",
+    "type": "web"
+  },
+  "build": {
+    "command": "python main.py"
+  },
+  "routes": [
+    {
+      "path": "/wechat",
+      "targetType": "app",
+      "target": "/wechat"
+    }
+  ]
+}
