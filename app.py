@@ -7,8 +7,7 @@ from deepseek_api import ask_deepseek
 
 app = Flask(__name__)
 
-import os
-TOKEN = os.getenv("WECHAT_TOKEN", "default_token_if_missing") 
+TOKEN = "weixincloud2024"
 
 
 @app.route("/wechat", methods=["GET", "POST"])
