@@ -8,7 +8,6 @@ from deepseek_api import ask_deepseek
 app = Flask(__name__)
 
 
- os.getenv("WECHAT_TOKEN")
 
 
 @app.route("/wechat", methods=["GET", "POST"])
