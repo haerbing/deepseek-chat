@@ -8,6 +8,9 @@ from deepseek_api import ask_deepseek
 app = Flask(__name__)
 
 
+ os.getenv("WECHAT_TOKEN")
+
+
 @app.route("/wechat", methods=["GET", "POST"])
 def wechat():
     if request.method == "GET":
@@ -28,18 +31,22 @@ def wechat():
             msg = parse_wechat_msg(xml_data)
             user_msg = msg["content"]
 
-            # **获取用户 OpenID**
-            openid = request.headers.get("x-wx-openid", "")  # 由云托管自动提供
+            # 获取用户 OpenID（微信云托管会自动加到 Header 中）
+            openid = request.headers.get("x-wx-openid", "")
 
-            # **调用微信开放接口服务**
+            # 调用微信内容安全接口（云托管模式下不需要 access_token）
             api_url = "https://api.weixin.qq.com/wxa/msg_sec_check"
-            payload = {"openid": openid, "version": 2, "scene": 2, "content": user_msg}
+            payload = {
+                "openid": openid,
+                "version": 2,
+                "scene": 2,
+                "content": user_msg
+            }
             wechat_response = requests.post(api_url, json=payload)
             check_result = wechat_response.json()
 
-            # 处理 API 返回结果
             if check_result.get("errcode") == 0:
-                reply_content = ask_deepseek(user_msg)  # AI 处理用户消息
+                reply_content = ask_deepseek(user_msg)
             else:
                 reply_content = "消息未通过安全校验"
 
@@ -51,7 +58,7 @@ def wechat():
             return make_response(reply_xml)
         except Exception as e:
             print("处理失败:", e)
-            return "success"  # 微信要求回复 success 避免重发
+            return "success"  # 微信要求返回 "success"，避免重复推送
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
