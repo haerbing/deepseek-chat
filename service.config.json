@@ -4,7 +4,7 @@
     "type": "web"
   },
   "build": {
-    "command": "python main.py"
+    "command": "python app.py"
   },
   "routes": [
     {
